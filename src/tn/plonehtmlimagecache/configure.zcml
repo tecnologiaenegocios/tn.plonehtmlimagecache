@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="tn.plonehtmlimagecache"
+    >
+
+  <includeDependencies package="." />
+
+  <grok:grok package="." />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="TN Plone HTML Image Cache"
+      directory="profiles/default"
+      description="A Plone add-on which makes external images to be served from your site"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:importStep
+      name="tn.plonehtmlimagecache-install-utilities"
+      title="TN Plone HTML Image Cache: installation of local utilities"
+      description="Installs needed local persistent utilities"
+      handler="tn.plonehtmlimagecache.setuphandlers.installUtilities">
+  </genericsetup:importStep>
+
+  <plone:behavior
+      title="Cache external images"
+      description="Stores external images from content's HTML internally"
+      provides=".behaviors.IHTMLImageCacheableFromContent"
+      marker=".interfaces.IPossibleHTMLImageCacheable"
+      factory=".behaviors.HTMLImageCacheableFromContent"
+      />
+
+</configure>
