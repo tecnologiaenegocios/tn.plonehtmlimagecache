@@ -30,7 +30,10 @@ class CacheManager(grok.GlobalUtility):
             del self.cache[key]
 
     def removeAll(self, context):
-        keys_removed = self.context_keys.unlinkContext(context)
+        context_keys = self.context_keys
+        if not context_keys:
+            return
+        keys_removed = context_keys.unlinkContext(context)
         for key in keys_removed:
             del self.cache[key]
 
@@ -46,7 +49,7 @@ class CacheManager(grok.GlobalUtility):
 
     @property
     def context_keys(self):
-        return zope.component.getUtility(interfaces.IContextKeys)
+        return zope.component.queryUtility(interfaces.IContextKeys)
 
 
 class CacheManagerTraverser(grok.MultiAdapter):

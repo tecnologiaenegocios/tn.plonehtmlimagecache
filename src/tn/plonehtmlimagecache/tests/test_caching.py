@@ -120,6 +120,19 @@ class TestCacheManagerRemoveAll(TestCacheManager):
 
         self.assertTrue('yet another key' in self.cache)
 
+    def test_does_not_fail_if_context_keys_cannot_be_found(self):
+        # This is important when you remove an entire Plone site.
+
+        context = object()
+
+        sm = zope.component.getGlobalSiteManager()
+        sm.unregisterUtility(self.context_keys, interfaces.IContextKeys)
+
+        try:
+            self.cache_manager.removeAll(context)
+        except:
+            self.fail()
+
 
 @assert_expectations
 class TestCacheManagerItemAccessAndContainment(TestCacheManager):
