@@ -1,5 +1,4 @@
 from five import grok
-from OFS.SimpleItem import SimpleItem
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from tn.plonehtmlimagecache.interfaces import IContextKeys
@@ -33,11 +32,10 @@ class PersistentSet(Persistent):
         return bool(self.inner_set)
 
 
-class ContextKeys(SimpleItem):
+class ContextKeys(Persistent):
     grok.implements(IContextKeys)
 
-    def __init__(self, *args, **kwargs):
-        super(ContextKeys, self).__init__(*args, **kwargs)
+    def __init__(self):
         self._items = PersistentDict()
 
     def link(self, key, context):
