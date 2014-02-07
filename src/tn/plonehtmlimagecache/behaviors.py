@@ -1,6 +1,7 @@
 from five import grok
 from persistent.dict import PersistentDict
 from plone.directives import form
+from plone.supermodel import model
 from tn.plonehtmlimagecache import _
 from tn.plonehtmlimagecache import interfaces
 from zope.annotation.interfaces import IAnnotations
@@ -11,7 +12,8 @@ import zope.interface
 HTML_IMAGE_CACHEABLE_KEY = 'tn.plonehtmlimagecache.html-image.cacheable'
 
 
-class IHTMLImageCacheableFromContent(form.Schema, interfaces.IHTMLImageCacheable):
+class IHTMLImageCacheableFromContent(model.Schema,
+                                     interfaces.IHTMLImageCacheable):
 
     form.fieldset(
         'image-caching',
@@ -27,6 +29,8 @@ zope.interface.alsoProvides(IHTMLImageCacheableFromContent,
 
 
 apply = lambda f: f()
+
+
 class HTMLImageCacheableFromContent(object):
     """Provides the behavior of being HTMLImage-cacheable to a generic content
     object.
@@ -46,6 +50,7 @@ class HTMLImageCacheableFromContent(object):
     def save_images_locally():
         def get(self):
             return self.annotations().get('save_images_locally')
+
         def set(self, value):
             self.annotations()['save_images_locally'] = value
         return property(get, set)
@@ -54,6 +59,7 @@ class HTMLImageCacheableFromContent(object):
     def html():
         def get(self):
             return interfaces.IHTMLAttribute(self.context).html
+
         def set(self, value):
             interfaces.IHTMLAttribute(self.context).html = value
         return property(get, set)
