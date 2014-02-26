@@ -3,11 +3,8 @@ from plone.namedfile import NamedBlobImage
 from plone.namedfile.interfaces import INamedBlobImage
 from plone.namedfile.utils import safe_basename, set_headers, stream_data
 from tn.plonehtmlimagecache import interfaces
-try:
-    from zope.component.hooks import getSite
-except ImportError:
-    from zope.site.hooks import getSite
-from zope.app.container.interfaces import IObjectAddedEvent
+from zope.component.hooks import getSite
+from zope.container.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
