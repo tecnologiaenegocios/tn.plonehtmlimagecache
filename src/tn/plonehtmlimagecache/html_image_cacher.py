@@ -18,7 +18,8 @@ import zope.component
 import zope.publisher
 
 image_url_re = re.compile(r'^.*\.(jpg|gif|png|bmp|ico)$')
-scheme_re    = re.compile(r'^[^/]+://')
+scheme_re = re.compile(r'^[^/]+://')
+cache_path = '/++tn_plonehtmlimagecache++cache/'
 
 
 class HTMLImageCacher(grok.Adapter):
@@ -41,8 +42,8 @@ class HTMLImageCacher(grok.Adapter):
 
     def cache(self):
         portal = getSite()
-        portal_url  = portal.absolute_url()
-        prefix = portal_url + '/++tn_plonehtmlimagecache++cache/'
+        portal_url = portal.absolute_url()
+        prefix = portal_url + cache_path
         cache_manager = zope.component.getUtility(interfaces.ICacheManager)
         cache_keys = zope.component.getUtility(interfaces.ICacheKeys)
 
@@ -58,7 +59,9 @@ class HTMLImageCacher(grok.Adapter):
             except urllib2.HTTPError:
                 return link
             except urllib2.URLError as error:
-                logger.warning('Could not replace link %r: %s' % (link, error))
+                logger.warning('Could not replace link %s in %s: %s' % (
+                    link, '/'.join(self.context.getPhysicalPath()), error
+                ))
                 return link
 
             path = urlparse.urlparse(link).path
@@ -87,10 +90,10 @@ class HTMLImageCacher(grok.Adapter):
 
     def restore(self):
         portal = getSite()
-        portal_url  = portal.absolute_url()
+        portal_url = portal.absolute_url()
         cache_manager = zope.component.getUtility(interfaces.ICacheManager)
         cache_keys = zope.component.getUtility(interfaces.ICacheKeys)
-        prefix = portal_url + '/++tn_plonehtmlimagecache++cache/'
+        prefix = portal_url + cache_path
 
         def replace_link(link):
             if not match(link):
