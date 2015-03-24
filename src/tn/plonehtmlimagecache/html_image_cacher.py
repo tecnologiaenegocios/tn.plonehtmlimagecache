@@ -8,6 +8,7 @@ from zope.container.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 
+import logging
 import lxml.html
 import re
 import urllib
@@ -46,6 +47,7 @@ class HTMLImageCacher(grok.Adapter):
         cache_keys = zope.component.getUtility(interfaces.ICacheKeys)
 
         cache_manager.removeAll(self.context)
+        logger = logging.getLogger('Plone')
 
         def replace_link(link):
             if not match(link):
@@ -54,6 +56,9 @@ class HTMLImageCacher(grok.Adapter):
             try:
                 f = self.url_opener.open(link)
             except urllib2.HTTPError:
+                return link
+            except urllib2.URLError as error:
+                logger.warning('Could not replace link %r: %s' % (link, error))
                 return link
 
             path = urlparse.urlparse(link).path
